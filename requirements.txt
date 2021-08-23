@@ -1,0 +1,1 @@
+asyncio_pool>=0.5.2

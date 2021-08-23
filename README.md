@@ -100,5 +100,5 @@
      100%   7356 (longest request)
 
 ## Требования
-Python >= 3.6
-asyncio-pool >= 0.5.2
+- Python >= 3.6
+- asyncio-pool >= 0.5.2

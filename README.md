@@ -115,6 +115,15 @@
         98%   1005
         99%   1006
         100%  15006 (longest request)
+        
+## E2E-тестирование
+
+Браузер: Mozilla Firefox 90.0.2 (64bit), Windows 10
+Запрос: http://localhost/httptest/wikipedia_russia.html
+    
+### Результат
+
+<img src="https://raw.githubusercontent.com/asergeenko/otus_pypro_httpserver/main/img/wikipedia_test_output.jpg" alt="Страница 'Russia' в Wikipedia" />
 
 
 ## Требования

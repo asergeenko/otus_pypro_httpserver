@@ -119,6 +119,7 @@
 ## E2E-тестирование
 
 Браузер: Mozilla Firefox 90.0.2 (64bit), Windows 10
+
 Запрос: http://localhost/httptest/wikipedia_russia.html
     
 ### Результат

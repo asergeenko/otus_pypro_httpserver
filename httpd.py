@@ -67,7 +67,7 @@ class TinyHttpHandler:
         path = self.doc_root + urlpath
 
         # Check if our top directory is DOCUMENT_ROOT (deny /../../../../../ cases)
-        if not os.path.abspath(path).startswith(os.path.abspath(self.doc_root) + os.sep):
+        if not os.path.abspath(path).startswith(os.path.abspath(self.doc_root)):# + os.sep):
             return BAD_REQUEST
 
         # /directory/ - return DOC_ROOT/directory/index.html
@@ -104,16 +104,33 @@ class TinyHttpHandler:
 
 async def handle_client(client, doc_root,loop):
     try:
-        request = (await loop.sock_recv(client, BUF_SIZE)).decode('utf8')
-    except Exception:
+        buffer = b''
+        while True:
+            # Use 'wait' with timeout otherwise 'sock_recv' suspends until the next request arrives
+            # https://github.com/python/cpython/blob/a31f4cc881992e84d351957bd9ac1a92f882fa39/Lib/asyncio/selector_events.py#L341
+            done, _ = await asyncio.wait({loop.sock_recv(client, BUF_SIZE)}, timeout=0.001)
+
+            # If result is empty or first element of the result set == b'' then there is nothing to read anymore
+            if not done or next(iter(done)) == b'':
+                break
+
+            buffer+=done.pop().result()
+    except:
         logging.exception("Error while receiving request")
+        client.shutdown(socket.SHUT_RDWR)
+        return
+    else:
+        request = buffer.decode('utf8')
+
     handler = TinyHttpHandler(doc_root)
     response =  handler.process_request(request)
     try:
         await loop.sock_sendall(client, response)
     except Exception:
         logging.exception("Error while sending response")
-    client.close()
+
+    client.shutdown(socket.SHUT_RDWR)
+
 
 class OTUServer:
     def __init__(self,ip, port, doc_root):
@@ -127,6 +144,7 @@ class OTUServer:
         self.server.listen(8)
         self.server.setblocking(False)
 
+
     def close(self):
         self.server.shutdown(socket.SHUT_RDWR)
 
@@ -138,13 +156,14 @@ class OTUServer:
                 await pool.spawn(handle_client(client, self.doc_root, loop))
 
 
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="HTTP server")
     parser.add_argument("-i", "--ip", default="localhost", help="Host to listen")
-    parser.add_argument("-p", "--port", type=int, default=8080, help="Port to listen")
+    parser.add_argument("-p", "--port", type=int, default=80, help="Port to listen")
     parser.add_argument("-w", "--workers", type=int, default=5, help="Number of worker processes")
-    parser.add_argument("-r", "--doc_root", default="./",
+    parser.add_argument("-r", "--doc_root", default=".",
                         help="Document root")
 
     args = parser.parse_args()
@@ -162,13 +181,8 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         logging.info("Keyboard interrupt. Stopping...")
     except Exception as e:
-        print (str(e))
+        logging.exception("An exception in main server loop occurred")
     finally:
         loop.close()
         server.close()
         logging.info("Server stopped")
-
-
-
-
-

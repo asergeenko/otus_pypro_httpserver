@@ -3,7 +3,7 @@
 
 ### Архитектура
 
-Сервер реализован с использованием асинхронной архитектуры. Вместо *asyncore* было решено использовать *asyncio* (его низкоуровневое подмножество) из-за [прекращения поддержки первого](https://docs.python.org/3/library/asyncore.html). Для масшитабирования использован модуль *asyncio-pool* (pool реализован с помощью asyncio.Semaphore).
+Сервер реализован с использованием асинхронной архитектуры. Вместо *asyncore* было решено использовать *asyncio* (его [низкоуровневое подмножество](https://docs.python.org/3/library/asyncio-llapi-index.html)) из-за [прекращения поддержки первого](https://docs.python.org/3/library/asyncore.html). Для масшитабирования использован модуль [asyncio-pool](https://github.com/gistart/asyncio-pool) (pool реализован с помощью [asyncio.Semaphore](https://docs.python.org/3/library/asyncio-sync.html#asyncio.Semaphore)).
 
 ### Возможности
 

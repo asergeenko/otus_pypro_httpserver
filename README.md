@@ -32,12 +32,44 @@
 - *DOC_ROOT* - DOCUMENT_ROOT для сервера (по умолчанию ./)
 
 ## Тестирование кода
-[Репозиторий](https://github.com/s-stupnikov/http-test-suite) 
+[Репозиторий](https://github.com/s-stupnikov/http-test-suite)
+
+### Результаты
+
+    directory index file exists ... ok
+    document root escaping forbidden ... ok
+    Send bad http headers ... ok
+    file located in nested folders ... ok
+    absent file returns 404 ... ok
+    urlencoded filename ... ok
+    file with two dots in name ... ok
+    query string after filename ... ok
+    slash after filename ... ok
+    filename with spaces ... ok
+    Content-Type for .css ... ok
+    Content-Type for .gif ... ok
+    Content-Type for .html ... ok
+    Content-Type for .jpeg ... ok
+    Content-Type for .jpg ... ok
+    Content-Type for .js ... ok
+    Content-Type for .png ... ok
+    Content-Type for .swf ... ok
+    head method support ... ok
+    directory index file absent ... ok
+    large file downloaded correctly ... ok
+    post method forbidden ... ok
+    Server header exists ... ok
+
+    ----------------------------------------------------------------------
+    Ran 23 tests in 2.631s
+
+    OK
+
 
 ## Нагрузочное тестирование
-Количество worker'ов: 5
+Количество worker'ов: 30
 
-    ab -n 50000 -c 100 -r http://localhost:8080/
+    ab -n 50000 -c 100 -r http://localhost:8080/httptest/dir2/
 
 ### Hardware
 - Intel(R) Xeon(R) CPU E5-2630 v2 @ 2.60GHz
@@ -46,58 +78,44 @@
 
 ### Результаты
 
-    Benchmarking localhost (be patient)
-    Completed 5000 requests
-    Completed 10000 requests
-    Completed 15000 requests
-    Completed 20000 requests
-    Completed 25000 requests
-    Completed 30000 requests
-    Completed 35000 requests
-    Completed 40000 requests
-    Completed 45000 requests
-    Completed 50000 requests
-    Finished 50000 requests
-    
-    
     Server Software:        OTUServer
     Server Hostname:        localhost
     Server Port:            8080
 
-    Document Path:          /
-    Document Length:        0 bytes
-    
+    Document Path:          /httptest/dir2/
+    Document Length:        34 bytes
+
     Concurrency Level:      100
-    Time taken for tests:   9.702 seconds
+    Time taken for tests:   25.581 seconds
     Complete requests:      50000
-    Failed requests:        47
-        (Connect: 0, Receive: 24, Length: 0, Exceptions: 23)
+    Failed requests:        1
+        (Connect: 0, Receive: 1, Length: 0, Exceptions: 0)
     Write errors:           0
-    Non-2xx responses:      49976
-    Total transferred:      7346472 bytes
-    HTML transferred:       0 bytes
-    Requests per second:    5153.79 [#/sec] (mean)
-    Time per request:       19.403 [ms] (mean)
-    Time per request:       0.194 [ms] (mean, across all concurrent requests)
-    Transfer rate:          739.50 [Kbytes/sec] received
+    Total transferred:      8899822 bytes
+    HTML transferred:       1699966 bytes
+    Requests per second:    1954.58 [#/sec] (mean)
+    Time per request:       51.162 [ms] (mean)
+    Time per request:       0.512 [ms] (mean, across all concurrent requests)
+    Transfer rate:          339.75 [Kbytes/sec] received
 
     Connection Times (ms)
                   min  mean[+/-sd] median   max
-    Connect:        0   11 154.2      0    7000
-    Processing:     0    5  76.5      2    3076
-    Waiting:        0    3  39.0      2    3076
-    Total:          0   16 186.9      2    7356
+    Connect:        0   43 311.2      0   15000
+    Processing:     0    7  56.9      5    3412
+    Waiting:        0    7  56.9      5    3412
+    Total:          0   50 327.1      5   15006
 
     Percentage of the requests served within a certain time (ms)
-      50%      2
-      66%      2
-      75%      2
-      80%      2
-      90%      3
-      95%      3
-      98%      3
-      99%      4
-     100%   7356 (longest request)
+        50%      5
+        66%      5
+        75%      5
+        80%      5
+        90%      6
+        95%      7
+        98%   1005
+        99%   1006
+        100%  15006 (longest request)
+
 
 ## Требования
 - Python >= 3.6

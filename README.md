@@ -69,7 +69,7 @@
 ## Нагрузочное тестирование
 Количество worker'ов: 30
 
-    ab -n 50000 -c 100 -r http://localhost:8080/httptest/dir2/
+    ab -n 50000 -c 100 -r http://127.0.0.1:8080/httptest/dir2/
 
 ### Hardware
 - Intel(R) Xeon(R) CPU E5-2630 v2 @ 2.60GHz

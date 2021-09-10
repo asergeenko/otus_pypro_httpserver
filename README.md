@@ -79,42 +79,30 @@
 ### Результаты
 
     Server Software:        OTUServer
-    Server Hostname:        localhost
+    Server Hostname:        127.0.0.1
     Server Port:            8080
 
     Document Path:          /httptest/dir2/
     Document Length:        34 bytes
 
     Concurrency Level:      100
-    Time taken for tests:   25.581 seconds
+    Time taken for tests:   20.027 seconds
     Complete requests:      50000
-    Failed requests:        1
-        (Connect: 0, Receive: 1, Length: 0, Exceptions: 0)
+    Failed requests:        0
     Write errors:           0
-    Total transferred:      8899822 bytes
-    HTML transferred:       1699966 bytes
-    Requests per second:    1954.58 [#/sec] (mean)
-    Time per request:       51.162 [ms] (mean)
-    Time per request:       0.512 [ms] (mean, across all concurrent requests)
-    Transfer rate:          339.75 [Kbytes/sec] received
+    Total transferred:      8650000 bytes
+    HTML transferred:       1700000 bytes
+    Requests per second:    2496.57 [#/sec] (mean)
+    Time per request:       40.055 [ms] (mean)
+    Time per request:       0.401 [ms] (mean, across all concurrent requests)
+    Transfer rate:          421.78 [Kbytes/sec] received
 
     Connection Times (ms)
                   min  mean[+/-sd] median   max
-    Connect:        0   43 311.2      0   15000
-    Processing:     0    7  56.9      5    3412
-    Waiting:        0    7  56.9      5    3412
-    Total:          0   50 327.1      5   15006
-
-    Percentage of the requests served within a certain time (ms)
-        50%      5
-        66%      5
-        75%      5
-        80%      5
-        90%      6
-        95%      7
-        98%   1005
-        99%   1006
-        100%  15006 (longest request)
+    Connect:        0   33 266.8      0    7001
+    Processing:     1    5  43.2      4    2646
+    Waiting:        1    5  43.2      4    2646
+    Total:          1   38 283.0      4    9055
         
 ## E2E-тестирование
 

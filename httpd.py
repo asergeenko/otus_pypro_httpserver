@@ -98,32 +98,40 @@ class TinyHttpHandler:
         response_lines += [': '.join(item) for item in self.headers.items()]
         self.buffer = ('\r\n'.join(response_lines) + TERMINATOR).encode()
         if body:
-            self.buffer+=body
+            self.buffer += body
 
         return self.buffer
 
 async def handle_client(client, doc_root,loop):
-    try:
-        buffer = b''
-        while True:
-            # Use 'wait' with timeout otherwise 'sock_recv' suspends until the next request arrives
-            # https://github.com/python/cpython/blob/a31f4cc881992e84d351957bd9ac1a92f882fa39/Lib/asyncio/selector_events.py#L341
-            done, _ = await asyncio.wait({loop.sock_recv(client, BUF_SIZE)}, timeout=0.001)
 
-            # If result is empty or first element of the result set == b'' then there is nothing to read anymore
-            if not done or next(iter(done)) == b'':
-                break
+    buffer = b''
+    while True:
+        # Use 'asyncio.wait' with timeout otherwise 'sock_recv' suspends until the next request arrives
+        # https://github.com/python/cpython/blob/a31f4cc881992e84d351957bd9ac1a92f882fa39/Lib/asyncio/selector_events.py#L341
 
-            buffer+=done.pop().result()
-    except:
-        logging.exception("Error while receiving request")
-        client.shutdown(socket.SHUT_RDWR)
-        return
-    else:
-        request = buffer.decode('utf8')
+        try:
+            done, _ = await asyncio.wait({loop.sock_recv(client, BUF_SIZE)}, timeout=3,
+                                         return_when=asyncio.FIRST_COMPLETED)
+
+        except Exception as e:
+            logging.exception("Error reading from socket")
+            client.shutdown(socket.SHUT_RDWR)
+            return
+
+        # If result is empty or first element of the result set == b'' then there is nothing to read anymore
+        if not done or next(iter(done)) == b'':
+            break
+
+        data = done.pop().result()
+        buffer += data
+
+        if data.endswith(TERMINATOR.encode()):
+            break
+
+    request = buffer.decode('utf8')
 
     handler = TinyHttpHandler(doc_root)
-    response =  handler.process_request(request)
+    response = handler.process_request(request)
     try:
         await loop.sock_sendall(client, response)
     except Exception:
@@ -186,3 +194,4 @@ if __name__ == "__main__":
         loop.close()
         server.close()
         logging.info("Server stopped")
+
